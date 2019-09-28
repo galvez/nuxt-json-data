@@ -7,22 +7,21 @@ export default {
     function () {
       this.nuxt.hook('vue-renderer:ssr:context', (ssrContext) => {
         const renderScripts = ssrContext.renderScripts
+        const oldState = JSON.stringify(ssrContext.nuxt)
         ssrContext.renderScripts = function () {
           return `${
             renderScripts(arguments)
           }<script type="application/json" id="__NUXT_JSON_DATA__">${
-            JSON.stringify(ssrContext.nuxt)
+            oldState
           }</script>`
         }
-        ssrContext.beforeRenderFns.push(() => {
-          ssrContext.nuxt = {
-            layout: 'default',
-            data: [],
-            error: null,
-            serverRendered: true,
-            logs: []
-          }
-        })
+        ssrContext.nuxt = {
+          layout: 'default',
+          data: [],
+          error: null,
+          serverRendered: true,
+          logs: []
+        }
       })
     }
   ]
