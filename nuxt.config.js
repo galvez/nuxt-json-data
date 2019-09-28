@@ -1,33 +1,27 @@
+
 export default {
+  plugins: [
+    '~/plugins/json-data'
+  ],
   modules: [
     function () {
-      const renderer = this.nuxt.renderer
-      const renderRoute = renderer.renderRoute.bind(renderer)
-      renderer.renderRoute = function() {
-        const renderScripts = this.serverContext.renderScripts
-        const nuxtState = this.serverContext.nuxt
-        this.serverContext.renderScripts = function () {
+      this.nuxt.hook('vue-renderer:ssr:context', (ssrContext) => {
+        const renderScripts = ssrContext.renderScripts
+        ssrContext.renderScripts = function () {
           return `${
             renderScripts(arguments)
           }<script type="application/json" id="__NUXT_JSON_DATA__">${
-            JSON.stringify(nuxtState)
+            JSON.stringify(ssrContext.nuxt)
           }</script>`
         }
-        this.serverContext.nuxt = {}
-        return renderRoute(arguments)
-      }
-      this.nuxt.hook('before:build', () => {
-        const pluginPath = join(this.options.buildDir, 'json-data-plugin.js')
-        writeFileSync(pluginPath, `
-          export default () => {
-            if (process.client) {
-              window.__NUXT__ = JSON.parse(document.getElementById('__NUXT_JSON_DATA__').textContent)
-            }
-          }      
-        `)
-        this.addPlugin({
-          src: pluginPath,
-          fileName: 'plugins/nuxt-json-data.js'
+        ssrContext.beforeRenderFns.push(() => {
+          ssrContext.nuxt = {
+            layout: 'default',
+            data: [],
+            error: null,
+            serverRendered: true,
+            logs: []
+          }
         })
       })
     }

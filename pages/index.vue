@@ -4,6 +4,9 @@
 
 <script>
 export default {
+  data: () => ({
+    msg: null,
+  }),
   asyncData: () => ({
       msg: 'Hello world!'
   })
