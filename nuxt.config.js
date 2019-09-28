@@ -1,7 +1,4 @@
 export default {
-  plugins: [
-    '~/plugins/json-data'
-  ],
   modules: [
     function () {
       const renderer = this.nuxt.renderer
@@ -16,7 +13,22 @@ export default {
             JSON.stringify(nuxtState)
           }</script>`
         }
+        this.serverContext.nuxt = {}
         return renderRoute(arguments)
+      }
+      this.nuxt.hook('before:build', () => {
+        const pluginPath = join(this.options.buildDir, 'json-data-plugin.js')
+        writeFileSync(pluginPath, `
+          export default () => {
+            if (process.client) {
+              window.__NUXT__ = JSON.parse(document.getElementById('__NUXT_JSON_DATA__').textContent)
+            }
+          }      
+        `)
+        this.addPlugin({
+          src: pluginPath,
+          fileName: 'plugins/nuxt-json-data.js'
+        })
       }
     }
   ]
