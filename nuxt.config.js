@@ -1,4 +1,7 @@
 export default {
+  plugins: [
+    '~/plugins/json-data'
+  ],
   modules: [
     function () {
       const renderer = this.nuxt.renderer
