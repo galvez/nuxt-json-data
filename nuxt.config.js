@@ -29,7 +29,7 @@ export default {
           src: pluginPath,
           fileName: 'plugins/nuxt-json-data.js'
         })
-      }
+      })
     }
   ]
 }
