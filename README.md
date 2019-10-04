@@ -2,7 +2,7 @@
 
 Experimental module for [Nuxt.js](https://nuxtjs.org) that changes `asyncData` and `Vuex` hydration to raw JSON serialization (like [Next.js](https://nextjs.org)) instead of using [devalue](https://www.npmjs.com/package/@nuxt/devalue). For large `asyncData` payloads, it resulted in up to 40% better performance in some tests.
 
-**Warning**: Does not currently work in `nuxt-edge`.
+**Warning**: XSS prone, use with real care when you understand what you are doing :) 
 
 ## Install
 
